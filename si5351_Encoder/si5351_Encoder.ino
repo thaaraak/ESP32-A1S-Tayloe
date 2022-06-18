@@ -1,6 +1,11 @@
 
+#define ENCODER_USE_INTERRUPTS 1
+
 #include "si5351.h"
 #include "Wire.h"
+#include "Encoder.h"
+
+Encoder* myEnc;
 
 int lastMult = -1;
 int currentFrequency = 5000000;
@@ -58,20 +63,30 @@ void setup()
   si5351 = new Si5351( &wire );
   si5351->init( SI5351_CRYSTAL_LOAD_8PF, 0, 0);
 
+  myEnc = new Encoder(15, 4);
+
 }
 
-void loop()
+long oldPosition  = -999;
+
+void loop() 
 {
+  long newPosition = myEnc->read() / 4;
+  if (newPosition != oldPosition) {
 
-  Serial.print( "Frequency: " );
-  Serial.println( currentFrequency );
-  
-  changeFrequency( currentFrequency );
-  currentFrequency += 500000;
+    if ( oldPosition != -999 )
+    {
+      if ( oldPosition > newPosition )
+        currentFrequency -= 500;
+      else
+        currentFrequency += 500;
 
-  if (currentFrequency > 40000000 )
-    currentFrequency = 5000000;
+      Serial.print( "Frequency: " );
+      Serial.println( currentFrequency );
+      changeFrequency( currentFrequency );
+
+    }
     
-  delay( 5000 );
-
+    oldPosition = newPosition;
+  }
 }
