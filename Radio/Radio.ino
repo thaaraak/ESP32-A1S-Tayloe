@@ -129,7 +129,7 @@ void setup(void)
   setupFIR();
   setupSynth();
 
-  changeFrequency( 7000000 );
+  changeFrequency( 14000000 );
 }
 
 
