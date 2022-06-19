@@ -9,7 +9,6 @@
 #include "es8388.h"
 #include "Wire.h"
 
-
 #include "fir_coeffs_61Taps_44100_200_19000.h"
 #include "fir_coeffs_101Taps_44100_200_19000.h"
 #include "fir_coeffs_161Taps_44100_200_19000.h"

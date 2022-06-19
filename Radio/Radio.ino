@@ -10,6 +10,8 @@
 #include "Wire.h"
 #include "si5351.h"
 #include "fir_coeffs_161Taps_44100_200_19000.h"
+#include "ChannelAddConverter.h"
+#include "Encoder.h"
 
 uint16_t sample_rate = 44100;
 uint16_t channels = 2;
@@ -18,7 +20,8 @@ I2SStream in;
 
 FilteredStream<int16_t, float> filtered(in, channels);  // Defiles the filter as BaseConverter
 StreamCopy copier(in, filtered, 512);               // copies sound into i2s
-
+ChannelAddConverter<int16_t> channelAdd;
+Encoder *myEnc;
 
 int lastMult = -1;
 int currentFrequency = 5000000;
@@ -30,7 +33,8 @@ TwoWire externalWire(1);
 void changeFrequency( int freq )
 {
     int mult = 0;
-
+    currentFrequency = freq;
+    
     if ( freq < 5000000 )
       mult = 150;
     else if ( freq < 6000000 )
@@ -52,11 +56,6 @@ void changeFrequency( int freq )
 
     uint64_t f = freq * 100ULL;
     uint64_t pllFreq = freq * mult * 100ULL;
-
-    Serial.print( "Frequency: " );
-    Serial.println( f );
-    Serial.print( "PLL Frequency: " );
-    Serial.println( pllFreq );
 
     si5351->set_freq_manual(f, pllFreq, SI5351_CLK0);
     si5351->set_freq_manual(f, pllFreq, SI5351_CLK2);
@@ -129,12 +128,37 @@ void setup(void)
   setupFIR();
   setupSynth();
 
+  myEnc = new Encoder(15, 4);
+
   changeFrequency( 14000000 );
 }
 
+long oldPosition  = -999;
 
+void readEncoder() 
+{
+  long newPosition = myEnc->read() / 4;
+  if (newPosition != oldPosition) {
+
+    if ( oldPosition != -999 )
+    {
+      if ( oldPosition > newPosition )
+        currentFrequency -= 500;
+      else
+        currentFrequency += 500;
+
+      Serial.print( "Frequency: " );
+      Serial.println( currentFrequency );
+      changeFrequency( currentFrequency );
+
+    }
+    
+    oldPosition = newPosition;
+  }
+}
 
 void loop() 
 {
-  copier.copy();
+  readEncoder();
+  copier.copy( channelAdd );
 }
