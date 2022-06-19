@@ -83,6 +83,7 @@ void setupI2S()
   wire.setPins( 33, 32 );
   
   es8388 codec;
+
   codec.begin( &wire );
   codec.config( bits_per_sample, output, input, 90 );
 
