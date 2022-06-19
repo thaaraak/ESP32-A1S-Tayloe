@@ -12,6 +12,7 @@
 #include "fir_coeffs_161Taps_44100_200_19000.h"
 #include "ChannelAddConverter.h"
 #include "Encoder.h"
+#include "LiquidCrystal_I2C.h"
 
 uint16_t sample_rate = 44100;
 uint16_t channels = 2;
@@ -21,7 +22,9 @@ I2SStream in;
 FilteredStream<int16_t, float> filtered(in, channels);  // Defiles the filter as BaseConverter
 StreamCopy copier(in, filtered, 512);               // copies sound into i2s
 ChannelAddConverter<int16_t> channelAdd;
+
 Encoder *myEnc;
+LiquidCrystal_I2C *lcd;
 
 int lastMult = -1;
 int currentFrequency = 5000000;
@@ -30,11 +33,26 @@ Si5351 *si5351;
 TwoWire wire(0);
 TwoWire externalWire(1);
 
+void printFrequency( int freq )
+{
+  char buf[20];
+
+  int millions = freq / 1000000;
+  int thousands = ( freq - millions * 1000000 ) / 1000;
+  int remain = freq % 1000;
+
+  sprintf( buf, "%3d.%03d.%03d", millions, thousands, remain );
+  lcd->setCursor(0,0);
+  lcd->print( buf );
+}
+
 void changeFrequency( int freq )
 {
     int mult = 0;
     currentFrequency = freq;
-    
+
+    printFrequency( freq );
+
     if ( freq < 5000000 )
       mult = 150;
     else if ( freq < 6000000 )
@@ -119,6 +137,17 @@ void setupSynth()
   si5351->init( SI5351_CRYSTAL_LOAD_8PF, 0, 0);
 }
 
+void setupLCD()
+{
+  
+  lcd = new LiquidCrystal_I2C(0x27,20,2,&externalWire);
+
+  lcd->init();
+  lcd->init();
+  lcd->backlight();
+  lcd->setCursor(0,0);
+}
+
 void setup(void) 
 {  
 
@@ -128,8 +157,9 @@ void setup(void)
   setupI2S();
   setupFIR();
   setupSynth();
+  setupLCD();
 
-  myEnc = new Encoder(15, 4);
+  myEnc = new Encoder(4, 15);
 
   changeFrequency( 14000000 );
 }
@@ -148,8 +178,6 @@ void readEncoder()
       else
         currentFrequency += 500;
 
-      Serial.print( "Frequency: " );
-      Serial.println( currentFrequency );
       changeFrequency( currentFrequency );
 
     }
