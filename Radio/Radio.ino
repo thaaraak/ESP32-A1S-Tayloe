@@ -161,7 +161,7 @@ void setup(void)
 
   myEnc = new Encoder(4, 15);
 
-  changeFrequency( 14000000 );
+  changeFrequency( 14200000 );
 }
 
 long oldPosition  = -999;

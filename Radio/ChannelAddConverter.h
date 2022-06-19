@@ -17,9 +17,15 @@ class ChannelAddConverter : public BaseConverter<T> {
   ChannelAddConverter() {
     this->channels = 2;
     this->direction = 1;
+    this->gain = 2;
   }
 
   void setDirection( int direction ) {
+	  this->direction = direction;
+  }
+
+  void setGain( int gain ) {
+	  this->gain = gain;
   }
 
   ~ChannelAddConverter() {
@@ -29,15 +35,14 @@ class ChannelAddConverter : public BaseConverter<T> {
     int count = size / channels / sizeof(T);
     T *sample = (T *)src;
 
-    T left,right;
+    T out;
 
     for (size_t j = 0; j < count; j++) {
 
-    	left = sample[j*2];
-    	right = sample[j*2+1];
+    	out = gain * ( sample[j*2] + direction * sample[j*2+1] );
 
-        sample[j*2] = left + direction*right;
-        sample[j*2+1] = left + direction*right;
+        sample[j*2] = out;
+        sample[j*2+1] = out;
 
     }
     return size;
@@ -45,6 +50,7 @@ class ChannelAddConverter : public BaseConverter<T> {
 
  protected:
   int direction;
+  int gain;
   int channels;
 };
 
