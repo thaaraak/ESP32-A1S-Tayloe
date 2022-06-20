@@ -22,7 +22,8 @@
 //#include "fir_coeffs_161Taps_16000_350_6000.h"
 //#include "fir_coeffs_301Taps_16000_350_7000.h"
 //#include "fir_coeffs_161Taps_22000_350_6000.h"
-#include "fir_coeffs_251Taps_22000_350_6000.h"
+//#include "fir_coeffs_251Taps_22000_350_6000.h"
+#include "fir_coeffs_251Taps_22000_350_10000.h"
 //#include "fir_coeffs_251Taps_44100_350_6000.h"      // Not enough horsepower for this one
 
 
@@ -151,7 +152,7 @@ void setupI2S()
 
 void setupFIR()
 {
-  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_22000_350_6000));
+  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_22000_350_10000));
   filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
 }
 
