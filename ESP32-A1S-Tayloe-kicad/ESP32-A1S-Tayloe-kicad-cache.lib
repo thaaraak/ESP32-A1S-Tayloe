@@ -195,6 +195,23 @@ X TSH TSH 200 -450 100 L 0 0 1 1 B
 ENDDRAW
 ENDDEF
 #
+# xenir_Cap_Polarized
+#
+DEF xenir_Cap_Polarized C 0 40 Y Y 1 F N
+F0 "C" 0 -225 28 H V C CNN
+F1 "xenir_Cap_Polarized" 0 50 28 H V C CNN
+F2 "" 0 50 50 H I C CNN
+F3 "" 0 50 50 H I C CNN
+DRAW
+S -20 -190 -40 -10 1 1 0 N
+S 20 -10 40 -190 1 1 0 F
+P 2 1 1 0 -110 -150 -70 -150 N
+P 2 1 1 0 -90 -170 -90 -130 N
+X ~ 1 -150 -100 110 R 0 0 1 1 P
+X ~ 2 150 -100 110 L 0 0 1 1 P
+ENDDRAW
+ENDDEF
+#
 # xenir_Capacitor
 #
 DEF xenir_Capacitor C 0 40 Y Y 1 F N
