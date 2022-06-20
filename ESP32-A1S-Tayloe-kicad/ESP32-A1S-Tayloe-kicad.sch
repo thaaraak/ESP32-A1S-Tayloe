@@ -1,4 +1,390 @@
-EESchema Schematic File Version 2
-EELAYER 25 0
+EESchema Schematic File Version 4
+EELAYER 30 0
 EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L xenir:ESP32-A1S U?
+U 1 1 62B0B8E9
+P 6050 3500
+F 0 "U?" H 6050 4757 50  0000 C CNN
+F 1 "ESP32-A1S" H 6050 4666 50  0000 C CNN
+F 2 "" H 5450 4700 50  0001 L BNN
+F 3 "" H 6050 4550 50  0001 L BNN
+F 4 "4" H 6050 4575 50  0000 C CNN "PARTREV"
+F 5 "Espressif Systems" H 5650 4650 50  0001 L BNN "MANUFACTURER"
+	1    6050 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L xenir:LCD_I2C D?
+U 1 1 62B0F410
+P 9550 4800
+F 0 "D?" H 9828 3746 50  0000 L CNN
+F 1 "LCD_I2C" H 9828 3655 50  0000 L CNN
+F 2 "" H 9550 4800 50  0001 C CNN
+F 3 "" H 9550 4800 50  0001 C CNN
+	1    9550 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+9V #PWR?
+U 1 1 62B18BD7
+P 8050 3250
+F 0 "#PWR?" H 8050 3100 50  0001 C CNN
+F 1 "+9V" H 8065 3423 50  0000 C CNN
+F 2 "" H 8050 3250 50  0001 C CNN
+F 3 "" H 8050 3250 50  0001 C CNN
+	1    8050 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62B190F0
+P 8050 3400
+F 0 "#PWR?" H 8050 3150 50  0001 C CNN
+F 1 "GND" H 8055 3227 50  0000 C CNN
+F 2 "" H 8050 3400 50  0001 C CNN
+F 3 "" H 8050 3400 50  0001 C CNN
+	1    8050 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9000 4150 9000 4450
+Wire Wire Line
+	8900 4300 8900 4450
+$Comp
+L power:+5V #PWR?
+U 1 1 62B1ED5C
+P 9100 4450
+F 0 "#PWR?" H 9100 4300 50  0001 C CNN
+F 1 "+5V" H 9115 4623 50  0000 C CNN
+F 2 "" H 9100 4450 50  0001 C CNN
+F 3 "" H 9100 4450 50  0001 C CNN
+	1    9100 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62B1F45A
+P 9500 4600
+F 0 "#PWR?" H 9500 4350 50  0001 C CNN
+F 1 "GND" H 9505 4427 50  0000 C CNN
+F 2 "" H 9500 4600 50  0001 C CNN
+F 3 "" H 9500 4600 50  0001 C CNN
+	1    9500 4600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 4450 9500 4450
+Wire Wire Line
+	9500 4450 9500 4600
+$Comp
+L Device:Rotary_Encoder_Switch SW?
+U 1 1 62B20C88
+P 4000 3600
+F 0 "SW?" H 4000 3233 50  0000 C CNN
+F 1 "Rotary_Encoder_Switch" H 4000 3324 50  0000 C CNN
+F 2 "" H 3850 3760 50  0001 C CNN
+F 3 "~" H 4000 3860 50  0001 C CNN
+	1    4000 3600
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4300 3500 5250 3500
+Wire Wire Line
+	4300 3700 5250 3700
+$Comp
+L power:GND #PWR?
+U 1 1 62B256F1
+P 4400 3850
+F 0 "#PWR?" H 4400 3600 50  0001 C CNN
+F 1 "GND" H 4405 3677 50  0000 C CNN
+F 2 "" H 4400 3850 50  0001 C CNN
+F 3 "" H 4400 3850 50  0001 C CNN
+	1    4400 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 3600 4400 3600
+Wire Wire Line
+	4400 3600 4400 3850
+$Comp
+L power:GND #PWR?
+U 1 1 62B25D9A
+P 3600 3850
+F 0 "#PWR?" H 3600 3600 50  0001 C CNN
+F 1 "GND" H 3605 3677 50  0000 C CNN
+F 2 "" H 3600 3850 50  0001 C CNN
+F 3 "" H 3600 3850 50  0001 C CNN
+	1    3600 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3700 3700 3600 3700
+Wire Wire Line
+	3600 3700 3600 3850
+Wire Wire Line
+	3700 3500 3500 3500
+Wire Wire Line
+	3500 3500 3500 3150
+Wire Wire Line
+	3500 3150 4750 3150
+Wire Wire Line
+	4750 3150 4750 3300
+Wire Wire Line
+	4750 3300 5250 3300
+Text GLabel 6350 5050 0    50   Input ~ 0
+Q_SIGNAL
+Text GLabel 6350 4800 0    50   Input ~ 0
+I_SIGNAL
+$Comp
+L xenir:Tayloe U?
+U 1 1 62B29D33
+P 8750 2850
+F 0 "U?" H 8750 3465 50  0000 C CNN
+F 1 "Tayloe" H 8750 3374 50  0000 C CNN
+F 2 "" H 8750 3400 50  0001 C CNN
+F 3 "" H 8750 3400 50  0001 C CNN
+	1    8750 2850
+	-1   0    0    -1  
+$EndComp
+$Comp
+L xenir:Capacitor C?
+U 1 1 62B36FA7
+P 6500 4800
+F 0 "C?" H 6500 4950 28  0000 C CNN
+F 1 "1uF" H 6600 4850 28  0000 C CNN
+F 2 "" H 6500 4650 50  0001 C CNN
+F 3 "" H 6500 4650 50  0001 C CNN
+	1    6500 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L xenir:Capacitor C?
+U 1 1 62B37510
+P 6500 5050
+F 0 "C?" H 6500 4900 28  0000 C CNN
+F 1 "1uF" H 6600 5000 28  0000 C CNN
+F 2 "" H 6500 4900 50  0001 C CNN
+F 3 "" H 6500 4900 50  0001 C CNN
+	1    6500 5050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 4800 6900 4800
+Wire Wire Line
+	7000 5050 6650 5050
+Text GLabel 9450 2650 2    50   Input ~ 0
+Q_SIGNAL
+Text GLabel 9450 2500 2    50   Input ~ 0
+I_SIGNAL
+Text GLabel 6850 3700 2    50   Input ~ 0
+OUTL
+Text GLabel 6850 3600 2    50   Input ~ 0
+OUTR
+Text GLabel 5250 5050 2    50   Input ~ 0
+OUTL
+Text GLabel 5250 4800 2    50   Input ~ 0
+OUTR
+$Comp
+L xenir:Audio_Jack J?
+U 1 1 62B4F5DF
+P 3600 5350
+F 0 "J?" H 3583 5381 50  0000 C CNN
+F 1 "Audio_Jack" H 3583 5290 50  0000 C CNN
+F 2 "" H 3600 5350 50  0001 C CNN
+F 3 "" H 3600 5350 50  0001 C CNN
+	1    3600 5350
+	1    0    0    1   
+$EndComp
+$Comp
+L xenir:Capacitor C?
+U 1 1 62B508AF
+P 4350 4950
+F 0 "C?" H 4350 5100 28  0000 C CNN
+F 1 ".1uF" H 4450 5000 28  0000 C CNN
+F 2 "" H 4350 4800 50  0001 C CNN
+F 3 "" H 4350 4800 50  0001 C CNN
+	1    4350 4950
+	0    1    1    0   
+$EndComp
+$Comp
+L xenir:Capacitor C?
+U 1 1 62B50F6B
+P 4700 5200
+F 0 "C?" H 4700 5350 28  0000 C CNN
+F 1 ".1uF" H 4800 5250 28  0000 C CNN
+F 2 "" H 4700 5050 50  0001 C CNN
+F 3 "" H 4700 5050 50  0001 C CNN
+	1    4700 5200
+	0    1    1    0   
+$EndComp
+$Comp
+L xenir:Resistor R?
+U 1 1 62B531E9
+P 4950 4800
+F 0 "R?" H 4950 4954 28  0000 C CNN
+F 1 "330" H 4950 4897 28  0000 C CNN
+F 2 "" H 4950 4700 50  0001 C CNN
+F 3 "" H 4950 4700 50  0001 C CNN
+	1    4950 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L xenir:Resistor R?
+U 1 1 62B53AF7
+P 4950 5050
+F 0 "R?" H 4950 5204 28  0000 C CNN
+F 1 "330" H 4950 5147 28  0000 C CNN
+F 2 "" H 4950 4950 50  0001 C CNN
+F 3 "" H 4950 4950 50  0001 C CNN
+	1    4950 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62B556EE
+P 4350 5100
+F 0 "#PWR?" H 4350 4850 50  0001 C CNN
+F 1 "GND" H 4355 4927 50  0000 C CNN
+F 2 "" H 4350 5100 50  0001 C CNN
+F 3 "" H 4350 5100 50  0001 C CNN
+	1    4350 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62B55B43
+P 4700 5350
+F 0 "#PWR?" H 4700 5100 50  0001 C CNN
+F 1 "GND" H 4705 5177 50  0000 C CNN
+F 2 "" H 4700 5350 50  0001 C CNN
+F 3 "" H 4700 5350 50  0001 C CNN
+	1    4700 5350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5250 4800 5150 4800
+Wire Wire Line
+	5250 5050 5150 5050
+Wire Wire Line
+	4750 5050 4700 5050
+Wire Wire Line
+	4750 4800 4350 4800
+Wire Wire Line
+	3800 4900 4050 4900
+Wire Wire Line
+	4050 4900 4050 4800
+Wire Wire Line
+	4050 4800 4350 4800
+Connection ~ 4350 4800
+Wire Wire Line
+	3800 5000 4050 5000
+Wire Wire Line
+	4050 5000 4050 5050
+Wire Wire Line
+	4050 5050 4700 5050
+Connection ~ 4700 5050
+$Comp
+L power:GND #PWR?
+U 1 1 62B5D275
+P 3800 5200
+F 0 "#PWR?" H 3800 4950 50  0001 C CNN
+F 1 "GND" H 3805 5027 50  0000 C CNN
+F 2 "" H 3800 5200 50  0001 C CNN
+F 3 "" H 3800 5200 50  0001 C CNN
+	1    3800 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 62B5F090
+P 4900 2600
+F 0 "#PWR?" H 4900 2450 50  0001 C CNN
+F 1 "+3.3V" H 4915 2773 50  0000 C CNN
+F 2 "" H 4900 2600 50  0001 C CNN
+F 3 "" H 4900 2600 50  0001 C CNN
+	1    4900 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4900 2600 4900 2700
+Wire Wire Line
+	4900 2700 5250 2700
+$Comp
+L power:GND #PWR?
+U 1 1 62B60E60
+P 5250 4400
+F 0 "#PWR?" H 5250 4150 50  0001 C CNN
+F 1 "GND" H 5255 4227 50  0000 C CNN
+F 2 "" H 5250 4400 50  0001 C CNN
+F 3 "" H 5250 4400 50  0001 C CNN
+	1    5250 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62B640E9
+P 6850 4400
+F 0 "#PWR?" H 6850 4150 50  0001 C CNN
+F 1 "GND" H 6855 4227 50  0000 C CNN
+F 2 "" H 6850 4400 50  0001 C CNN
+F 3 "" H 6850 4400 50  0001 C CNN
+	1    6850 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62B650B2
+P 7100 2350
+F 0 "#PWR?" H 7100 2100 50  0001 C CNN
+F 1 "GND" H 7105 2177 50  0000 C CNN
+F 2 "" H 7100 2350 50  0001 C CNN
+F 3 "" H 7100 2350 50  0001 C CNN
+	1    7100 2350
+	1    0    0    -1  
+$EndComp
+Text GLabel 6850 2700 2    50   Input ~ 0
+SERIALRX
+Text GLabel 6850 2800 2    50   Input ~ 0
+SERIALTX
+Wire Wire Line
+	6850 2600 6950 2600
+Wire Wire Line
+	6950 2600 6950 2350
+Wire Wire Line
+	6950 2350 7100 2350
+Wire Wire Line
+	8050 2650 7700 2650
+Wire Wire Line
+	7700 2650 7700 3200
+Wire Wire Line
+	6850 3200 7700 3200
+Wire Wire Line
+	7550 3300 7550 2500
+Wire Wire Line
+	7550 2500 8050 2500
+Wire Wire Line
+	6850 3300 7550 3300
+Wire Wire Line
+	9000 4150 7550 4150
+Wire Wire Line
+	7550 4150 7550 3300
+Connection ~ 7550 3300
+Wire Wire Line
+	7700 3200 7700 4300
+Connection ~ 7700 3200
+Wire Wire Line
+	7700 4300 8900 4300
 $EndSCHEMATC
