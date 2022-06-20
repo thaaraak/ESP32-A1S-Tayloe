@@ -25,7 +25,7 @@ StreamCopy copier(in, filtered, 512);               // copies sound into i2s
 void setup(void) 
 {  
 
-  Serial.begin(115200);
+
   // change to Warning to improve the quality
   AudioLogger::instance().begin(Serial, AudioLogger::Error); 
 
@@ -42,7 +42,7 @@ void setup(void)
   
   es8388 codec;
   codec.begin( &wire );
-  codec.config( bits_per_sample, output, input, 90 );
+  codec.config( bits_per_sample, output, input, 30 );
 
   // start I2S in
   Serial.println("starting I2S...");

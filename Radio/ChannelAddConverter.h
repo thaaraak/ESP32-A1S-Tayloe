@@ -17,7 +17,7 @@ class ChannelAddConverter : public BaseConverter<T> {
   ChannelAddConverter() {
     this->channels = 2;
     this->direction = 1;
-    this->gain = 2;
+    this->gain = 1;
   }
 
   void setDirection( int direction ) {

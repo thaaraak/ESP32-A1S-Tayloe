@@ -5,16 +5,25 @@
  * @copyright GPLv3
  */
 
+#include "Bounce2.h"
+
 #include "AudioTools.h"
 #include "es8388.h"
 #include "Wire.h"
+#include "WiFi.h"
+
 #include "si5351.h"
-#include "fir_coeffs_161Taps_44100_200_19000.h"
+//#include "fir_coeffs_161Taps_44100_200_19000.h"
+//#include "fir_coeffs_161Taps_44100_350_6000.h"
+#include "fir_coeffs_161Taps_16000_350_6000.h"
 #include "ChannelAddConverter.h"
 #include "Encoder.h"
 #include "LiquidCrystal_I2C.h"
 
-uint16_t sample_rate = 44100;
+#define BOUNCE_PIN 12
+
+//uint16_t sample_rate = 44100;
+uint16_t sample_rate = 16000;
 uint16_t channels = 2;
 uint16_t bits_per_sample = 16;
 I2SStream in;
@@ -29,19 +38,24 @@ LiquidCrystal_I2C *lcd;
 int lastMult = -1;
 int currentFrequency = 5000000;
 
+Bounce bounce = Bounce();
+int directionState = 1;
+
+
 Si5351 *si5351;
 TwoWire wire(0);
 TwoWire externalWire(1);
 
-void printFrequency( int freq )
+void printFrequency()
 {
   char buf[20];
 
+  int freq = currentFrequency;
   int millions = freq / 1000000;
   int thousands = ( freq - millions * 1000000 ) / 1000;
   int remain = freq % 1000;
 
-  sprintf( buf, "%3d.%03d.%03d", millions, thousands, remain );
+  sprintf( buf, "%3d.%03d.%03d %3s", millions, thousands, remain, directionState == 1 ? "LSB" : "USB" );
   lcd->setCursor(0,0);
   lcd->print( buf );
 }
@@ -51,7 +65,7 @@ void changeFrequency( int freq )
     int mult = 0;
     currentFrequency = freq;
 
-    printFrequency( freq );
+    printFrequency();
 
     if ( freq < 5000000 )
       mult = 150;
@@ -119,12 +133,14 @@ void setupI2S()
   //config.fixed_mclk = 0;
   config.pin_mck = 0;
   in.begin(config);
+
+  channelAdd.setGain(1);
 }
 
 
 void setupFIR()
 {
-  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_161Taps_44100_200_19000));
+  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_161Taps_16000_350_6000));
   filtered.setFilter(1, new FIR<float>(coeffs_delay_161));
 }
 
@@ -148,6 +164,13 @@ void setupLCD()
   lcd->setCursor(0,0);
 }
 
+
+void setupButton() 
+{
+  bounce.attach( BOUNCE_PIN,INPUT_PULLUP ); // USE INTERNAL PULL-UP
+  bounce.interval(5); // interval in ms
+}
+
 void setup(void) 
 {  
 
@@ -158,9 +181,14 @@ void setup(void)
   setupFIR();
   setupSynth();
   setupLCD();
+  setupButton();
+  //pinMode(BOUNCE_PIN, OUTPUT);    // sets the digital pin 13 as output
 
   myEnc = new Encoder(4, 15);
 
+  WiFi.mode(WIFI_OFF);
+  btStop();
+  
   changeFrequency( 14200000 );
 }
 
@@ -184,10 +212,31 @@ void readEncoder()
     
     oldPosition = newPosition;
   }
+
+  
+  bounce.update();
+
+  if ( bounce.changed() ) 
+  {
+    int deboucedInput = bounce.read();
+    if ( deboucedInput == LOW ) {
+
+      directionState = directionState * -1; 
+      channelAdd.setDirection(directionState );
+      printFrequency();
+    }
+  }
+  
 }
 
 void loop() 
 {
   readEncoder();
+
+//  digitalWrite(BOUNCE_PIN, HIGH);
+
   copier.copy( channelAdd );
+
+//  digitalWrite(BOUNCE_PIN, LOW);
+
 }
