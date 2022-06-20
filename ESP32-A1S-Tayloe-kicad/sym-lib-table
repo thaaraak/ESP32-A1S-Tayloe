@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name esp32-a1s-rescue)(type Legacy)(uri /home/xenir/git/esp32-a1s/esp32-a1s-rescue.lib)(options "")(descr ""))
+)
