@@ -11,11 +11,21 @@
 #include "es8388.h"
 #include "Wire.h"
 #include "WiFi.h"
-
 #include "si5351.h"
+
+
+//#include "fir_coeffs_251Taps_16000_350_7000.h"       // Not enough horsepower for this one
 //#include "fir_coeffs_161Taps_44100_200_19000.h"
+//#include "fir_coeffs_161Taps_44100_350_19000.h"
 //#include "fir_coeffs_161Taps_44100_350_6000.h"
-#include "fir_coeffs_161Taps_16000_350_6000.h"
+//#include "fir_coeffs_161Taps_44100_350_6000.h"
+//#include "fir_coeffs_161Taps_16000_350_6000.h"
+//#include "fir_coeffs_301Taps_16000_350_7000.h"
+//#include "fir_coeffs_161Taps_22000_350_6000.h"
+#include "fir_coeffs_251Taps_22000_350_6000.h"
+//#include "fir_coeffs_251Taps_44100_350_6000.h"      // Not enough horsepower for this one
+
+
 #include "ChannelAddConverter.h"
 #include "Encoder.h"
 #include "LiquidCrystal_I2C.h"
@@ -23,7 +33,8 @@
 #define BOUNCE_PIN 12
 
 //uint16_t sample_rate = 44100;
-uint16_t sample_rate = 16000;
+//uint16_t sample_rate = 16000;
+uint16_t sample_rate = 22000;
 uint16_t channels = 2;
 uint16_t bits_per_sample = 16;
 I2SStream in;
@@ -140,8 +151,8 @@ void setupI2S()
 
 void setupFIR()
 {
-  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_161Taps_16000_350_6000));
-  filtered.setFilter(1, new FIR<float>(coeffs_delay_161));
+  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_22000_350_6000));
+  filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
 }
 
 
@@ -232,11 +243,6 @@ void readEncoder()
 void loop() 
 {
   readEncoder();
-
-//  digitalWrite(BOUNCE_PIN, HIGH);
-
   copier.copy( channelAdd );
-
-//  digitalWrite(BOUNCE_PIN, LOW);
 
 }
