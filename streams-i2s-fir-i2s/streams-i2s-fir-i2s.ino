@@ -9,33 +9,32 @@
 #include "es8388.h"
 #include "Wire.h"
 
+#include "FIRConverter.h"
 #include "fir_coeffs_61Taps_44100_200_19000.h"
 #include "fir_coeffs_101Taps_44100_200_19000.h"
 #include "fir_coeffs_161Taps_44100_200_19000.h"
 #include "fir_coeffs_251Taps_44100_350_6000.h"
+#include "fir_coeffs_351Taps_44100_350_10000.h"
 
 uint16_t sample_rate = 44100;
 uint16_t channels = 2;
 uint16_t bits_per_sample = 16;
 I2SStream in;
 
-FilteredStream<int16_t, float> filtered(in, channels);  // Defiles the filter as BaseConverter
-StreamCopy copier(in, filtered, 512);               // copies sound into i2s
+StreamCopy copier(in, in);               // copies sound into i2s
+FIRConverter<int16_t> *fir;
 
 // Arduino Setup
 void setup(void) 
 {  
+  Serial.begin(115200);
+  AudioLogger::instance().begin(Serial, AudioLogger::Error); 
 
+  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
+  
+  //filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_44100_350_6000));
+  //filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
 
-  // change to Warning to improve the quality
-  AudioLogger::instance().begin(Serial, AudioLogger::Info); 
-
-  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_101Taps_44100_200_19000));
-  filtered.setFilter(1, new FIR<float>(coeffs_delay_101));
-/*
-  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_44100_350_6000));
-  filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
-*/
   // Input/Output Modes
   es_dac_output_t output = (es_dac_output_t) ( DAC_OUTPUT_LOUT1 | DAC_OUTPUT_LOUT2 | DAC_OUTPUT_ROUT1 | DAC_OUTPUT_ROUT2 );
   es_adc_input_t input = ADC_INPUT_LINPUT2_RINPUT2;
@@ -64,8 +63,9 @@ void setup(void)
   in.begin(config);
 }
 
-// Arduino loop - copy sound to out 
+
 void loop() 
 {
-  copier.copy();
+  copier.copy(*fir);
+  //copier.copy();
 }
