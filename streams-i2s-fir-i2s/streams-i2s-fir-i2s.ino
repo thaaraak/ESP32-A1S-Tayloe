@@ -15,8 +15,9 @@
 #include "fir_coeffs_161Taps_44100_200_19000.h"
 #include "fir_coeffs_251Taps_44100_350_6000.h"
 #include "fir_coeffs_351Taps_44100_350_10000.h"
+#include "fir_coeffs_501Taps_22000_350_10000.h"
 
-uint16_t sample_rate = 44100;
+uint16_t sample_rate = 22000;
 uint16_t channels = 2;
 uint16_t bits_per_sample = 16;
 I2SStream in;
@@ -30,7 +31,8 @@ void setup(void)
   Serial.begin(115200);
   AudioLogger::instance().begin(Serial, AudioLogger::Error); 
 
-  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
+//  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
+  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_22000_350_10000, (float*)&coeffs_delay_501, 501 );
   
   //filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_44100_350_6000));
   //filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
@@ -67,5 +69,4 @@ void setup(void)
 void loop() 
 {
   copier.copy(*fir);
-  //copier.copy();
 }

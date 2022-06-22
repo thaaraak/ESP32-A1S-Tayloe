@@ -23,32 +23,40 @@
 //#include "fir_coeffs_301Taps_16000_350_7000.h"
 //#include "fir_coeffs_161Taps_22000_350_6000.h"
 //#include "fir_coeffs_251Taps_22000_350_6000.h"
-#include "fir_coeffs_251Taps_22000_350_10000.h"
+//#include "fir_coeffs_251Taps_22000_350_10000.h"
+#include "fir_coeffs_351Taps_44100_350_10000.h"
+//#include "fir_coeffs_501Taps_22000_350_10000.h"
+#include "fir_coeffs_501Taps_44100_350_10000.h"
 //#include "fir_coeffs_251Taps_44100_350_6000.h"      // Not enough horsepower for this one
 
-
+#include "FIRConverter.h"
 #include "ChannelAddConverter.h"
 #include "Encoder.h"
 #include "LiquidCrystal_I2C.h"
 
 #define BOUNCE_PIN 12
 
-//uint16_t sample_rate = 44100;
+uint16_t sample_rate = 44100;
 //uint16_t sample_rate = 16000;
-uint16_t sample_rate = 22000;
+//uint16_t sample_rate = 22000;
 uint16_t channels = 2;
 uint16_t bits_per_sample = 16;
 I2SStream in;
 
-FilteredStream<int16_t, float> filtered(in, channels);  // Defiles the filter as BaseConverter
-StreamCopy copier(in, filtered, 512);               // copies sound into i2s
-ChannelAddConverter<int16_t> channelAdd;
+//FilteredStream<int16_t, float> filtered(in, channels); 
+//StreamCopy copier(in, filtered, 512);              
+//ChannelAddConverter<int16_t> channelAdd;
+
+FIRAddConverter<int16_t> *fir;
+StreamCopy copier(in, in); 
 
 Encoder *myEnc;
+Encoder *dirEnc;
 LiquidCrystal_I2C *lcd;
 
 int lastMult = -1;
 int currentFrequency = 5000000;
+float currentDir = 1.0;
 
 Bounce bounce = Bounce();
 int directionState = 1;
@@ -146,14 +154,19 @@ void setupI2S()
   config.pin_mck = 0;
   in.begin(config);
 
-  channelAdd.setGain(1);
+  fir->setGain(1);
 }
 
 
 void setupFIR()
 {
-  filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_22000_350_10000));
-  filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
+  //fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
+  //fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_22000_350_10000, (float*)&coeffs_delay_501, 501 );
+  fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_44100_350_10000, (float*)&coeffs_delay_501, 501 );
+  fir->setCorrection(currentDir);
+  
+  //filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_22000_350_10000));
+  //filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
 }
 
 
@@ -189,13 +202,14 @@ void setup(void)
   Serial.begin(115200);
   AudioLogger::instance().begin(Serial, AudioLogger::Error); 
 
-  setupI2S();
   setupFIR();
+  setupI2S();
   setupSynth();
   setupLCD();
   setupButton();
   //pinMode(BOUNCE_PIN, OUTPUT);    // sets the digital pin 13 as output
 
+  dirEnc = new Encoder(18, 5);
   myEnc = new Encoder(4, 15);
 
   WiFi.mode(WIFI_OFF);
@@ -204,6 +218,7 @@ void setup(void)
   changeFrequency( 14200000 );
 }
 
+long oldDir = -999;
 long oldPosition  = -999;
 
 void readEncoder() 
@@ -225,7 +240,22 @@ void readEncoder()
     oldPosition = newPosition;
   }
 
-  
+  long newDir = dirEnc->read() / 4;
+  if (newDir != oldDir) {
+
+    if ( oldDir != -999 )
+    {
+      if ( oldDir > newDir )
+        currentDir -= 0.01;
+      else
+        currentDir += 0.01;
+
+      fir->setCorrection(currentDir);
+      Serial.println(currentDir);
+    }
+    
+    oldDir = newDir;
+  }
   bounce.update();
 
   if ( bounce.changed() ) 
@@ -234,7 +264,7 @@ void readEncoder()
     if ( deboucedInput == LOW ) {
 
       directionState = directionState * -1; 
-      channelAdd.setDirection(directionState );
+      fir->setDirection(directionState );
       printFrequency();
     }
   }
@@ -244,6 +274,6 @@ void readEncoder()
 void loop() 
 {
   readEncoder();
-  copier.copy( channelAdd );
+  copier.copy( *fir );
 
 }
