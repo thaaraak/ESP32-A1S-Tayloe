@@ -64,7 +64,6 @@ int directionState = 1;
 
 Si5351 *si5351;
 TwoWire wire(0);
-TwoWire externalWire(1);
 
 void printFrequency()
 {
@@ -131,9 +130,6 @@ void setupI2S()
   es_adc_input_t input = ADC_INPUT_LINPUT2_RINPUT2;
   //  es_adc_input_t input = ADC_INPUT_LINPUT1_RINPUT1;
 
-  TwoWire wire(0);
-  wire.setPins( 33, 32 );
-  
   es8388 codec;
 
   codec.begin( &wire );
@@ -146,12 +142,12 @@ void setupI2S()
   config.bits_per_sample = bits_per_sample; 
   config.channels = channels;
   config.i2s_format = I2S_STD_FORMAT;
-  config.pin_ws = 25;
-  config.pin_bck = 27;
-  config.pin_data = 26;
-  config.pin_data_rx = 35;
+  config.pin_ws = 18;
+  config.pin_bck = 5;
+  config.pin_data = 17;
+  config.pin_data_rx = 16;
   //config.fixed_mclk = 0;
-  config.pin_mck = 0;
+  config.pin_mck = 3;
   in.begin(config);
 
   fir->setGain(1);
@@ -160,9 +156,9 @@ void setupI2S()
 
 void setupFIR()
 {
-  //fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
+  fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
   //fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_22000_350_10000, (float*)&coeffs_delay_501, 501 );
-  fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_44100_350_10000, (float*)&coeffs_delay_501, 501 );
+  //fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_44100_350_10000, (float*)&coeffs_delay_501, 501 );
   fir->setCorrection(currentDir);
   
   //filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_22000_350_10000));
@@ -172,16 +168,14 @@ void setupFIR()
 
 void setupSynth()
 {
-  externalWire.setPins( 23, 19 );
-
-  si5351 = new Si5351( &externalWire );
+  si5351 = new Si5351( &wire );
   si5351->init( SI5351_CRYSTAL_LOAD_8PF, 0, 0);
 }
 
 void setupLCD()
 {
   
-  lcd = new LiquidCrystal_I2C(0x27,20,2,&externalWire);
+  lcd = new LiquidCrystal_I2C(0x27,20,2,&wire);
 
   lcd->init();
   lcd->init();
@@ -202,6 +196,8 @@ void setup(void)
   Serial.begin(115200);
   AudioLogger::instance().begin(Serial, AudioLogger::Error); 
 
+  wire.setPins( 4, 15 );
+  
   setupFIR();
   setupI2S();
   setupSynth();
@@ -209,8 +205,8 @@ void setup(void)
   setupButton();
   //pinMode(BOUNCE_PIN, OUTPUT);    // sets the digital pin 13 as output
 
-  dirEnc = new Encoder(18, 5);
-  myEnc = new Encoder(4, 15);
+  dirEnc = new Encoder(22, 23);
+  myEnc = new Encoder(32, 33);
 
   WiFi.mode(WIFI_OFF);
   btStop();
@@ -240,6 +236,7 @@ void readEncoder()
     oldPosition = newPosition;
   }
 
+
   long newDir = dirEnc->read() / 4;
   if (newDir != oldDir) {
 
@@ -256,6 +253,8 @@ void readEncoder()
     
     oldDir = newDir;
   }
+  
+  
   bounce.update();
 
   if ( bounce.changed() ) 

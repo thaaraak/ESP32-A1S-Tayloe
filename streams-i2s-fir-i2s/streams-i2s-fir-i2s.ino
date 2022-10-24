@@ -10,6 +10,7 @@
 #include "Wire.h"
 
 #include "FIRConverter.h"
+#include "MixerConverter.h"
 #include "fir_coeffs_61Taps_44100_200_19000.h"
 #include "fir_coeffs_101Taps_44100_200_19000.h"
 #include "fir_coeffs_161Taps_44100_200_19000.h"
@@ -26,6 +27,8 @@ I2SStream in;
 
 StreamCopy copier(in, in);               // copies sound into i2s
 FIRConverter<int16_t> *fir;
+MixerConverter<int16_t> *mix;
+MultiConverter<int16_t> *multi;
 
 // Arduino Setup
 void setup(void) 
@@ -33,13 +36,17 @@ void setup(void)
   Serial.begin(115200);
   AudioLogger::instance().begin(Serial, AudioLogger::Error); 
 
-//  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
+  //fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
 //  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_801Taps_44100_350_10000, (float*)&coeffs_delay_801, 801 );
-  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_44100_350_10000, (float*)&coeffs_delay_501, 501 );
-  
-  //filtered.setFilter(0, new FIR<float>(coeffs_hilbert_251Taps_44100_350_6000));
-  //filtered.setFilter(1, new FIR<float>(coeffs_delay_251));
 
+  multi = new MultiConverter<int16_t>();
+
+  fir = new FIRConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_44100_350_10000, (float*)&coeffs_delay_501, 501 );
+  mix = new MixerConverter<int16_t>();
+
+//  multi->add( *fir );
+//  multi->add( *mix );
+  
   // Input/Output Modes
   es_dac_output_t output = (es_dac_output_t) ( DAC_OUTPUT_LOUT1 | DAC_OUTPUT_LOUT2 | DAC_OUTPUT_ROUT1 | DAC_OUTPUT_ROUT2 );
   es_adc_input_t input = ADC_INPUT_LINPUT2_RINPUT2;
@@ -52,12 +59,13 @@ void setup(void)
   codec.begin( &wire );
   codec.config( bits_per_sample, output, input, 90 );
 
+
   // start I2S in
   Serial.println("starting I2S...");
   auto config = in.defaultConfig(RXTX_MODE);
   config.sample_rate = sample_rate; 
   config.bits_per_sample = bits_per_sample; 
-  config.channels = channels;
+  config.channels = 2;
   config.i2s_format = I2S_STD_FORMAT;
   config.pin_ws = 25;
   config.pin_bck = 27;
@@ -71,5 +79,7 @@ void setup(void)
 
 void loop() 
 {
+  //copier.copy();
+//  copier.copy(*multi);
   copier.copy(*fir);
 }
