@@ -4,6 +4,7 @@
 #include "si5351.h"
 #include "Wire.h"
 #include "Encoder.h"
+#include "Bounce2.h"
 
 Encoder* myEnc;
 
@@ -53,17 +54,29 @@ void changeFrequency( int freq )
     }
 }
 
+Bounce bounce = Bounce();
+
+void setupButton() 
+{
+  bounce.attach( 4,INPUT_PULLUP ); // USE INTERNAL PULL-UP
+  bounce.interval(5); // interval in ms
+}
+
 void setup()
 {
+
   // Start serial and initialize the Si5351
   Serial.begin(115200);
 
+  Serial.print( "Starting..." );
+
+  setupButton();
   wire.setPins( 23, 19 );
 
   si5351 = new Si5351( &wire );
   si5351->init( SI5351_CRYSTAL_LOAD_8PF, 0, 0);
 
-  myEnc = new Encoder(15, 4);
+  myEnc = new Encoder(12, 15);
 
 }
 
@@ -88,5 +101,18 @@ void loop()
     }
     
     oldPosition = newPosition;
+  }
+
+    bounce.update();
+
+  if ( bounce.changed() ) 
+  {
+    int deboucedInput = bounce.read();
+    if ( deboucedInput == LOW ) {
+      Serial.println( "LOW" );
+
+    } else {
+      Serial.println( "HIGH" );
+    }
   }
 }
