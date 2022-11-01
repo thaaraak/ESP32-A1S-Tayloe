@@ -15,7 +15,7 @@
 
 
 //#include "fir_coeffs_251Taps_16000_350_7000.h"       // Not enough horsepower for this one
-//#include "fir_coeffs_161Taps_44100_200_19000.h"
+//#include "fir_coeffs_161Ta+++++++++++++++++++++++++++++++++++++ps_44100_200_19000.h"
 //#include "fir_coeffs_161Taps_44100_350_19000.h"
 //#include "fir_coeffs_161Taps_44100_350_6000.h"
 //#include "fir_coeffs_161Taps_44100_350_6000.h"
@@ -24,9 +24,9 @@
 //#include "fir_coeffs_161Taps_22000_350_6000.h"
 //#include "fir_coeffs_251Taps_22000_350_6000.h"
 //#include "fir_coeffs_251Taps_22000_350_10000.h"
-#include "fir_coeffs_351Taps_44100_350_10000.h"
+//#include "fir_coeffs_351Taps_44100_350_10000.h"
 //#include "fir_coeffs_501Taps_22000_350_10000.h"
-#include "fir_coeffs_501Taps_44100_350_10000.h"
+#include "fir_coeffs_501Taps_44100_150_4000.h"
 //#include "fir_coeffs_251Taps_44100_350_6000.h"      // Not enough horsepower for this one
 
 #include "FIRConverter.h"
@@ -156,7 +156,7 @@ void setupI2S()
 
 void setupFIR()
 {
-  fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_351Taps_44100_350_10000, (float*)&coeffs_delay_351, 351 );
+  fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_44100_150_4000, (float*)&coeffs_delay_501, 501 );
   //fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_22000_350_10000, (float*)&coeffs_delay_501, 501 );
   //fir = new FIRAddConverter<int16_t>( (float*)&coeffs_hilbert_501Taps_44100_350_10000, (float*)&coeffs_delay_501, 501 );
   fir->setCorrection(currentDir);
@@ -206,7 +206,7 @@ void setup(void)
   setupButton();
 
   //dirEnc = new Encoder(22, 23);
-  myEnc = new Encoder(12, 15);
+  myEnc = new Encoder(15, 12);
 
   WiFi.mode(WIFI_OFF);
   btStop();
