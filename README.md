@@ -6,7 +6,7 @@ Unfortunately the build is a bit of a pain to set up and I don't have a build sc
 - https://github.com/pschatzmann/arduino-audio-tools
 
 2) Then you need to make sure the general library for Button processing
-- Bounce2 
+- https://www.arduino.cc/reference/en/libraries/bounce2/
 
 3) Then finally install the libraries from the forks I have created
 - https://github.com/thaaraak/firduino
