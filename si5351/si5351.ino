@@ -66,7 +66,7 @@ void setup(void)
   Serial.begin(115200);
   Serial.println("Si5351 Clockgen Test");
 
-  wire.setPins( 23, 19 );
+  wire.setPins( 27, 26 );
 
   setupSynth();
   changeFrequency(7000000);  
