@@ -13,6 +13,21 @@ TwoWire wire(0);
 int currentFrequency = -1;
 int lastMult = -1;
 
+void print(uint64_t value)
+{
+    const int NUM_DIGITS    = log10(value) + 1;
+
+    char sz[NUM_DIGITS + 1];
+    
+    sz[NUM_DIGITS] =  0;
+    for ( size_t i = NUM_DIGITS; i--; value /= 10)
+    {
+        sz[i] = '0' + (value % 10);
+    }
+    
+    Serial.print(sz);
+}
+
 void changeFrequency( int freq )
 {
     int mult = 0;
@@ -35,23 +50,43 @@ void changeFrequency( int freq )
     else if ( freq < 40000000 )
       mult = 20;
     else if ( freq < 50000000 )
-      mult = 15;
-
+      mult = 16;
+    else if ( freq < 70000000 )
+      mult = 10;    
+    else if ( freq < 90000000 )
+      mult = 8;
+    else if ( freq < 124000000 )
+      mult = 8;
+    else if ( freq < 138000000 )
+      mult = 8;
+    else if ( freq < 148000000 )
+      mult = 8;
+    else
+      mult = 8;
+      
     uint64_t f = freq * 100ULL;
     uint64_t pllFreq = freq * mult * 100ULL;
 
+
+  //si5351->set_freq( f, SI5351_CLK0 );
+  //si5351->set_freq( f, SI5351_CLK2 );
+  
     si5351->set_freq_manual(f, pllFreq, SI5351_CLK0);
     si5351->set_freq_manual(f, pllFreq, SI5351_CLK2);
+
 
     if ( mult != lastMult )
     {
       si5351->set_phase(SI5351_CLK0, 0);
       si5351->set_phase(SI5351_CLK2, mult);
       si5351->pll_reset(SI5351_PLLA);
+      //si5351->pll_reset(SI5351_PLLB);
       si5351->update_status();
 
       lastMult = mult;
     }
+
+
 }
 
 void setupSynth()
@@ -66,10 +101,10 @@ void setup(void)
   Serial.begin(115200);
   Serial.println("Si5351 Clockgen Test");
 
-  wire.setPins( 27, 26 );
+  wire.setPins( 26, 25 );
 
   setupSynth();
-  changeFrequency(7000000);  
+  changeFrequency(147000000);  
 
 }
 
